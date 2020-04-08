@@ -27,7 +27,61 @@
 
 ### memo, PureComponent
 
+如果组件是纯组件（同样的属性值传入会渲染出同样的结果），那么你对这个组件的期望当然是当下一次接受了相同的属性值时会去重用上一次的渲染结果，而不是再一次渲染。
+
+但 React 默认不会执行这一操作,就像下述例子一样：
+
+```jsx
+import React from "react";
+import "./styles.css";
+
+function Title({ title }) {
+  return <h1>{title}</h1>
+}
+
+export default function App() {
+  const [count, setCount] = React.useState(0)
+  return (
+    <div className="App">
+      <Title title="Hello Counter!"/>
+      <p>{ count }</p>
+      <button onClick={() => setCount(count+1)}>+1</button>
+    </div>
+  );
+}
+```
+
+么次点击 `+1 button` 都会重新去渲染 `Title` 组件，这显然不是我们想要的结果。若要达到我们的目的，可以使用 `React.memo`。
+
+```jsx
+import React from "react";
+import "./styles.css";
+
+function Title({ title }) {
+  return <h1>{title}</h1>
+}
+
+const MemoTitle = React.memo(Title)
+
+export default function App() {
+  const [count, setCount] = React.useState(0)
+  return (
+    <div className="App">
+      <MemoTitle title="Hello Counter!"/>
+      <p>{ count }</p>
+      <button onClick={() => setCount(count+1)}>+1</button>
+    </div>
+  );
+}
+```
+
+现在，无论点击多少次按钮，都只会沿用上一次的渲染结果。
+
+`PureComponent` 与 `React.memo` 都可以达到记忆化效果，区别在于 `PureComponent` 适用于类组件，而 `React.memo` 适用于函数组件。
+
 ### Portals
+
+
 
 ### Suspence
 
