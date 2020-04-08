@@ -23,7 +23,7 @@
     - [常用DOM操作](dom/dom.md)
     - [DOM事件](dom/event.md)
 * [浏览器篇](README.md)
-    - [browser/全局对象.md]
+    - [BOM](browser/bom.md)
 * [网络篇](README.md)
     - [TCP](network/tcp.md)
     - [HTTP](network/http.md)
