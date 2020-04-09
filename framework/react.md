@@ -95,8 +95,54 @@ class Modal extends React.Component {
 }
 ```
 
+### Ref
+
+`ref` 可以创建类组件实例或DOM元素的引用，之后对他们进行访问。
+
+创建引用的方式: 
+
+- React.createRef
+- React.useRef
+- 通过向 `ref` 属性传递函数
+
+```jsx
+import React from 'react';
+
+class Demo extends React.Component {
+    constructor(props) {
+        super(props);
+        this.refTitle = React.createRef();
+    }
+
+    componentDidMount() {
+        // ref.current => p
+        console.log(this.refTitle.current);
+    }
+
+    render() {
+        return (
+            <p class="title" ref={this.refTitle}>Ref Demo</p>
+        )
+    }
+}
+
+
+function App () {
+    const [refDemo, setRefDemo] = React.useRef(null)
+
+    React.useEffect(() => {
+        console.log(refDemo.current)
+    })
+
+    return (
+        <div className="app">
+            <Demo ref={refDemo}/>
+        </div>
+    )
+}
+```
+
 ### Suspence
 
-### Ref
 
 
