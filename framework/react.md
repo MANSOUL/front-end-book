@@ -55,7 +55,6 @@ export default function App() {
 
 ```jsx
 import React from "react";
-import "./styles.css";
 
 function Title({ title }) {
   return <h1>{title}</h1>
@@ -81,14 +80,23 @@ export default function App() {
 
 ### Portals
 
+`Portrals` API通常用于将组件挂载到独立的DOM元素上，一个比较常见的例子就是模态框。
 
+```jsx
+import React from "react";
+
+class Modal extends React.Component {
+    render() {
+        return React.createPortal(
+            <div className="modal"></div>,
+            document.body
+        )
+    }
+}
+```
 
 ### Suspence
 
 ### Ref
-
-### Diff 
-
-### Fiber
 
 
