@@ -144,6 +144,23 @@ function App () {
 
 ### Suspence
 
+`Suspence` 可以让组件在渲染之前“等待”某些东西。如今，Suspense仅支持一种用例：使用 `React.lazy` 动态加载组件。将来，它将支持其他用例，例如数据获取。
+
+```jsx
+const SomeComponent = React.lazy(() => import('./SomeComponent'));
+
+function MyComponent() {
+  return (
+    // Displays <Spinner> until OtherComponent loads
+    <React.Suspense fallback={<Spinner />}>
+      <div>
+        <OtherComponent />
+      </div>
+    </React.Suspense>
+  );
+}
+```
+
 
 ### SSR
 
