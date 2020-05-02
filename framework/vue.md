@@ -48,4 +48,97 @@ new Vue({
 - `v-bind`
 - `v-model`
 
-### 
+### `v-model`
+
+`v-model` 是 Vue 双向数据绑定的核心指令，能够将表单元素和数据字段进行绑定，其内部原理通过监听表单元素的改变事件和自动修改表单元素的值。
+
+```js
+$input.addEventListener('input', e => {
+    vm.data.value = e.target.value
+})
+
+vm.$watch('value', newVal => {
+    $input.value = newVal
+})
+```
+
+### 组件通信
+
+1) 父子组件通信
+
+父组件通过**子组件的属性**传递数据，子组件调用 `$emit` 调用父组件函数。
+
+2) 通过 `ref`, `$parent`, `$children`
+
+`ref`： 在普通DOM元素上使用时指向DOM实例，在组件上使用时指向组件实例。
+
+`$parent,$children`: 访问父/子组件实例。
+
+3) `EventBus` 
+
+通过实例化一个空的 Vue 实例，并通过其 `$on/$emit` 来实现父子组件，兄弟组件，隔代组件的通信。
+
+4) `$attrs`
+
+适用于隔代组件的通信，通过声明 `v-bind="$attrs"` 可以使得后代组件使用祖先组件的数据。
+
+```vue
+<template>
+<div id="app">
+    <son :msg="msg" @changeMsg="handleChangeMsg"></son>
+</div>
+<template>
+<script>
+import Son from 'son'
+export default {
+  data() {
+    return {
+      msg: 'Hello Vue'
+    }
+  },
+  components: {
+    Son
+  },
+  methods: {
+    handleChangeMsg(val) {
+        this.msg = val
+    }
+  }
+}
+</script>
+```
+
+```vue
+<template>
+<g-son :msg="msg" v-bind="$attrs" v-on="$listeners"></g-son>
+<template>
+<script>
+// son.vue
+import GSon from 'gson'
+export default {
+  components: {
+    GSon
+  }
+}
+</script>
+```
+
+```vue
+<template>
+<div>
+  <p>{{msg}}}</p>
+  <button @click="handleChange">Change</button>
+</div>
+<template>
+<script>
+// gson.vue
+export default {
+  props: ['msg'],
+  methods: {
+    handleChange() {
+        this.$emit('changeMsg', 'Hello World')
+    }
+  }
+}
+</script>
+```
