@@ -78,7 +78,7 @@ vm.$watch('value', newVal => {
 
 通过实例化一个空的 Vue 实例，并通过其 `$on/$emit` 来实现父子组件，兄弟组件，隔代组件的通信。
 
-4) `$attrs`
+4) `$attrs/$listeners`
 
 适用于隔代组件的通信，通过声明 `v-bind="$attrs"` 可以使得后代组件使用祖先组件的数据。
 
@@ -142,3 +142,65 @@ export default {
 }
 </script>
 ```
+
+5) `provide/inject`
+
+适用于隔代组件通信，祖先组件通过 `provide` 提供数据，后代组件通过 `inject` 注入变量获取数据。
+
+```vue
+<template>
+<div>
+  <p>{{msg}}</p>
+  <comp/>
+</div>
+</template>
+
+<script>
+import Comp from 'comp'
+export default {
+  components: {
+    Comp
+  },
+  data () {
+    return {
+        msg: 'hello'
+    }
+  },
+  provide () {
+    return {
+      changeMsg: this.changeMsg
+    }
+  },
+  methods: {
+    changeMsg(newVal) {
+      this.msg = newVal
+    }
+  }
+}
+</script>
+```
+
+```vue
+<template>
+<button @click="handleChange">change</button>
+</template>
+<script>
+// comp.vue
+export default {
+  inject: ['changeMsg'],
+  methods: {
+    handleChange() {
+        this.changeMsg('hi')
+    }
+  }
+}
+</script>
+```
+
+6) Vuex
+
+使用状态管理工具 Vuex 可以实现父子、隔代、兄弟组件间的通信。
+
+- Vuex 的状态存储是响应式的。当组件从 `store` 中读取状态的时候，若 `store` 中的状态发生变化，那么相应的组件也会更新。
+- 改变 `store` 的唯一途径是显式触发 `mutation`，这使得我们可以很方便的更总每一个状态的变化。
+
