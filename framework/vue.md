@@ -204,3 +204,54 @@ export default {
 - Vuex 的状态存储是响应式的。当组件从 `store` 中读取状态的时候，若 `store` 中的状态发生变化，那么相应的组件也会更新。
 - 改变 `store` 的唯一途径是显式触发 `mutation`，这使得我们可以很方便的更总每一个状态的变化。
 
+### 父组件监听子组件的生命周期
+
+1） 通过 `$emit` 触发
+
+```vue
+// parent
+<child @mounted="handleChildMounted"/>
+
+// child
+mounted() {
+  this.$emit('mounted')
+}
+```
+
+2）`@hook` 监听
+
+```vue
+//parent
+<child @hook:mounted="handleMounted"/>
+```
+
+### `vue-router` 的实现原理
+
+1）`hash router`
+
+利用 URL 中的 `hash` 实现，通过监听 `hashchange` 事件来监听路由的变化，随后进行渲染。
+
+```js
+window.addEventListener('hashchange', e => {
+  console.log('hash change', e)
+})
+```
+
+2）`browser router`
+
+通过HTML5提供的history API实现:
+
+```js
+// 新增历史记录
+window.history.pushState(data, 'title', url)
+// 替换当前历史记录
+window.history.replaceState(data, 'title', url)
+```
+
+通过监听 `popstate` 来监听手动浏览器的前进回退:
+
+```js
+window.addEventListener('popstate', e => {
+  console.log('browser router change', e)
+})
+```
