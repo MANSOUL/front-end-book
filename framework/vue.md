@@ -255,3 +255,21 @@ window.addEventListener('popstate', e => {
   console.log('browser router change', e)
 })
 ```
+
+3）`abstract router`
+
+在非浏览器环境中使用，通过JS模拟的路由：
+
+```js
+class AbstractHistory {
+  push() {
+
+  }
+  replace() {
+    
+  }
+  go() {
+
+  }
+}
+```
