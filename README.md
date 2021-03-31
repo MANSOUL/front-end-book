@@ -33,7 +33,7 @@
     - [内容安全策略(CSP)](safety/内容安全策略[CSP].md)
     - [网络劫持与中间人攻击](safety/网络劫持与中间人攻击.md)
 * [性能优化篇](README.md)
-    - [性能监控](performance/性能监控.md)
+    - [性能及错误监控](performance/性能及错误监控.md)
     - [性能优化](performance/性能优化.md)
 * [框架篇](README.md)
     - [原理](framework/原理.md)
