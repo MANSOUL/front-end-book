@@ -1,5 +1,9 @@
 ## React 
 
+### JSX 是什么？
+
+JSX是一种用于表达XML等数据结构的一种书写方式，XML结构较为扁平且直观，而JSON数据格式能直接运行于JavaScript应用但相对XML不够直观，所以结构两者，便有了JSX语法。
+
 ### 生命周期
 
 自React 16.3开始，组件生命周期经过了比较大的改动。
@@ -154,7 +158,7 @@ function MyComponent() {
     // Displays <Spinner> until OtherComponent loads
     <React.Suspense fallback={<Spinner />}>
       <div>
-        <OtherComponent />
+        <SomeComponent />
       </div>
     </React.Suspense>
   );
@@ -164,4 +168,38 @@ function MyComponent() {
 
 ### SSR
 
+最初使用React书写的应用相对于原始应用，在SEO及首屏展示上都没有优势，由于React应用需要在JS下载并运行后才能渲染出真实的HTML结构，而不利于爬虫爬取，进而无法SEO优化。并且将会导致长时间的白屏，致使用户体验性降低。
 
+好在借助于Node.js和React服务端渲染，这两个问题已经可以忽略不计了，前提是应用上服务端渲染。
+
+对于React SSR，主要是借助于如下几个API实现。
+
+1、`ReactDOM.hydrate()`
+
+> 作用于 `render()` 一样，但是对于已经使用 `ReactDOMServer` 渲染出的HTML内容，只会为其添加事件监听。
+
+2、`ReactDOMServer`
+
+> 运行于Node服务端，用于将组件渲染为静态标记。
+
+有如下几个方法：
+
+**renderToString()**
+
+> 将React元素渲染为HTML字符串，可以用这个方法在服务端生成HTML用于首屏优化和SEO。
+
+> 如果在节点上调用了 `React.hydrate()`，React将仅会在这些已渲染的节点上添加事件。
+
+**renderToStaticMarkup()**
+
+> 和 `renderToString` 类似，但是不会渲染包含React内部所使用的额外的属性。可用于在React作为静态页面生成器的场景，使用这个方法可以省去一部分字节。
+
+> 注意：使用这个方法渲染出的标记不具备交互性。
+
+**renderToNodeStream**
+
+> 作用同 `renderToString` 一样，不过不会将React元素渲染为字符串，而是一个可读流。
+
+**renderToNodeStream**
+
+> 作用同 `renderToStaticMarkup` 一样，不过不会将React元素渲染为字符串，而是一个可读流。
