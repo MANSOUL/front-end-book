@@ -203,3 +203,17 @@ function MyComponent() {
 **renderToStaticNodeStream**
 
 > 作用同 `renderToStaticMarkup` 一样，不过不会将React元素渲染为字符串，而是一个可读流。
+
+### 组件通信
+
+- 父子组件之间通过 `props`, `event prop` 通信
+- 兄弟组件之间通过父组件作为桥梁通信
+- 更深层的组件通过如果通过 `props` 通信，会导致许多组件需接收并处理很多无用的 `props`。因此可以通过 `context` 或第三方状态库通信。
+
+### react router 原理
+
+- `hash` 路由：通过改变路由上的hash值，并通过window监听 `hashchange` 变化实现
+- `history` 模式：通过 `pushState`，`replaceState`及window监听 `popstate` 实现
+- 虚拟路由：在非浏览器环境中通过内存模拟路由
+
+
