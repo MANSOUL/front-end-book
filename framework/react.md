@@ -200,6 +200,6 @@ function MyComponent() {
 
 > 作用同 `renderToString` 一样，不过不会将React元素渲染为字符串，而是一个可读流。
 
-**renderToNodeStream**
+**renderToStaticNodeStream**
 
 > 作用同 `renderToStaticMarkup` 一样，不过不会将React元素渲染为字符串，而是一个可读流。
