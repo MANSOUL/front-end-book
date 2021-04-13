@@ -47,7 +47,6 @@ loader 本质上就是一个导出为函数的JavaScript模块，本loader runne
 ```js
 // text-replace-loader.js
 module.exports = function(content, map, meta) {
-    module.exports = function(content, map, meta) {
     // 从query中获取到要替换的目标文本
     let { target, replacer } = this.query
     // 构建正则表达式
