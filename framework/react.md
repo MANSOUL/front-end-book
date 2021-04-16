@@ -216,4 +216,191 @@ function MyComponent() {
 - `history` 模式：通过 `pushState`，`replaceState`及window监听 `popstate` 实现
 - 虚拟路由：在非浏览器环境中通过内存模拟路由
 
+### hooks
 
+通过hooks能够在不编写class的情况下使用 React 状态等特性。
+
+- hooks 使得复用状态逻辑成为可能
+- 将组件中相互关联的部分拆分成更小的函数
+- 在非class的情况下可以使用更多的React特性
+
+#### 常用hook
+
+**useState**
+
+通过 `useState` 可以在函数组件中添加 state。`useState` 会返回元组：当前状态和更新状态的函数，`useState` 接收初始状态作为参数。
+
+**useEffect**
+
+`useEffect` 用于执行一些副作用动作，作用同于`componentDidMount`、`componentDidUpdate`、`componentWillUnmount`。
+
+下面是一个使用 `useEffect` 制作的计时器：
+
+```jsx
+import React, { useState, useEffect } from 'react'
+
+function Timer() {
+  const [time, setTime] = useState(0)
+
+  useEffect(()  => {
+    const timer = setInterval(() => {
+      setTime(t => t + 1)
+    }, 1000)
+    
+    // 返回的函数会在组件卸载时执行，可用于清理计时器等资源
+    return () => {
+      clearInterval(timer)
+    }
+    // 1、不传递第二个参数时useEffect在每次渲染后都会执行
+    // 2、第二个参数传空数组，则只会在初次渲染后执行
+    // 3、在参数数组中传入依赖，则在依赖值改变后会重新执行
+  }, [])
+
+  return (
+    <div>
+      Time: {time}
+    </div>
+  )
+}
+```
+
+**useContext**
+
+```jsx
+const value = useContext(context)
+```
+
+接收 context 对象并返回该 context 的当前值。当前的 context 值由上层组件中距离当前组件最近的 `context.Provider` 的 `value` 属性决定。
+
+**useReducer**
+
+```jsx
+const [state, dispatch] = useReducer(reducer, initialArg, init)
+```
+
+接收一个形如 `(state, action) => newState` 的 reducer，并返回当前的 state 以及与其配套的 `dispatch` 方法。
+
+在计算 state 逻辑较复杂或下一个 state 依赖于之前的 state 的情况下，比 `useState` 更实用。
+
+**useMemo**
+
+```jsx
+const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);
+```
+
+将创建函数和依赖数组作为参数传入，仅会在依赖项改变时才重新计算。用于优化避免每次渲染都进行高开销的计算。
+
+**useCallback**
+
+```jsx
+const memoizedCallback = useCallback(
+  () => {
+    doSomething(a, b);
+  },
+  [a, b],
+);
+```
+
+作用类似于 `useMemo`，只是 `useCallback` 的返回值是一个记忆化函数，需要调用采取执行内部的逻辑。
+
+**useRef**
+
+```jsx
+const refContainer = useRef(initialValue)
+```
+
+返回一个可变的 ref 对象，其 `.current` 属性被初始化为传入的参数，而返回的 ref 对象在组件的整个生命周期内保持不变。
+
+最常见的例子就是用于访问子组件:
+
+```jsx
+function AuthFocusInput() {
+  const refInput = useRef(null)
+  useEffect(() => {
+    refInput.current.focus()
+  }, [])
+  return (
+    <input ref={refInput} type="text"/>
+  )
+}
+```
+
+**useImperativeHandle**
+
+```jsx
+useImperativeHandle(ref, createHandle, [deps])
+```
+
+可用于在使用 `ref` 时自定义暴露给父组件的实例值。应当与 `forwardRef` 一起使用：
+
+```jsx
+function FancyInput(props, ref) {
+  const refInput = useRef(null)
+  useImperativeHandle(ref, () => ({
+    focus: refInput.current.focus()
+  }))
+  return <input ref={refInput}/>
+}
+
+FancyInput = forwardRef(FancyInput)
+```
+
+而在渲染 `<FancyInput ref={inputRef} />` 的父组件中则可以调用 `inputRef.current.focus()`。
+
+**useLayoutEffect**
+
+函数签名和 `useEffect` 相同，但是会在所有的 DOM 变更之后同步调用 effect，也就是在浏览器执行绘制之前就调用。
+
+同 `useEffect` 比较来说，`useEffect` 异步运行并且是在更新绘制到屏幕之后，可以这样理解:
+
+1、进行了一次更新
+2、React 进行组件渲染
+3、浏览器进行绘制
+4、运行 `useEffect`
+
+而 `useLayoutEffect` 同步执行并且是在浏览器执行绘制之前：
+
+1、进行了一次更新
+2、React 进行组件渲染
+3、运行 `useLayoutEffect`
+4、浏览器进行绘制
+
+#### 自定义hook
+
+通过自定义 hook，可以将组件逻辑提取到可重用的函数中。
+
+例如定义一个受控组件，原来是这样写的：
+
+```jsx
+funciton CustomInput() {
+  const [state, setState] = useState('')
+
+  return <input type="text" value={state} onChange={e => setState(e.target.value)}/>
+}
+```
+
+接下来可以将一部分逻辑抽离出来:
+
+```jsx
+function useInputValue(initialValue) {
+  const [state, setState] = useState(initialValue)
+
+  const setValue = e => {
+    setState(e.target.value)
+  }
+
+  return [state, setValue]
+}
+```
+
+接着可以修改原来的例子为：
+
+```jsx
+function CustomInput() {
+  const [value, setValue] = useInputValue('')
+
+  return <input type="" onChange={setValue}/>
+}
+```
+
+通过封装后的 `useInputValue` 成为了可复用的组件逻辑。
